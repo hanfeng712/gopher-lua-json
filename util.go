@@ -109,3 +109,10 @@ func fromJSON(L *lua.LState, value interface{}) lua.LValue {
 	}
 	return lua.LNil
 }
+
+func NewJsonValue(value lua.LValue) *JsonValue {
+	return &JsonValue{
+		value,
+		make(map[*lua.LTable]bool),
+	}
+}
