@@ -1,9 +1,9 @@
-package json // import "layeh.com/gopher-json"
+package json
 
 import (
 	"testing"
 
-	"github.com/yuin/gopher-lua"
+	lua "github.com/yuin/gopher-lua"
 )
 
 func TestSimple(t *testing.T) {

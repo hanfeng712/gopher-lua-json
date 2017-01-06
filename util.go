@@ -1,52 +1,52 @@
-package json // import "layeh.com/gopher-json"
+package json
 
 import (
 	"encoding/json"
 	"errors"
 	"strconv"
 
-	"github.com/yuin/gopher-lua"
+	lua "github.com/yuin/gopher-lua"
 )
 
 var (
-	errFunction = errors.New("cannot encode function to JSON")
-	errChannel  = errors.New("cannot encode channel to JSON")
-	errState    = errors.New("cannot encode state to JSON")
-	errUserData = errors.New("cannot encode userdata to JSON")
-	errNested   = errors.New("cannot encode recursively nested tables to JSON")
+	ErrFunction = errors.New("cannot encode function to JSON")
+	ErrChannel  = errors.New("cannot encode channel to JSON")
+	ErrState    = errors.New("cannot encode state to JSON")
+	ErrUserData = errors.New("cannot encode userdata to JSON")
+	ErrNested   = errors.New("cannot encode recursively nested tables to JSON")
 )
 
-type jsonValue struct {
+type JsonValue struct {
 	lua.LValue
 	visited map[*lua.LTable]bool
 }
 
-func (j jsonValue) MarshalJSON() ([]byte, error) {
-	return toJSON(j.LValue, j.visited)
+func (j JsonValue) MarshalJSON() ([]byte, error) {
+	return ToJSON(j.LValue, j.visited)
 }
 
-func toJSON(value lua.LValue, visited map[*lua.LTable]bool) (data []byte, err error) {
+func ToJSON(value lua.LValue, visited map[*lua.LTable]bool) (data []byte, err error) {
 	switch converted := value.(type) {
 	case lua.LBool:
 		data, err = json.Marshal(converted)
 	case lua.LChannel:
-		err = errChannel
+		err = ErrChannel
 	case lua.LNumber:
 		data, err = json.Marshal(converted)
 	case *lua.LFunction:
-		err = errFunction
+		err = ErrFunction
 	case *lua.LNilType:
 		data, err = json.Marshal(converted)
 	case *lua.LState:
-		err = errState
+		err = ErrState
 	case lua.LString:
 		data, err = json.Marshal(converted)
 	case *lua.LTable:
-		var arr []jsonValue
-		var obj map[string]jsonValue
+		var arr []JsonValue
+		var obj map[string]JsonValue
 
 		if visited[converted] {
-			panic(errNested)
+			panic(ErrNested)
 		}
 		visited[converted] = true
 
@@ -56,23 +56,23 @@ func toJSON(value lua.LValue, visited map[*lua.LTable]bool) (data []byte, err er
 				index := int(i) - 1
 				if index != len(arr) {
 					// map out of order; convert to map
-					obj = make(map[string]jsonValue)
+					obj = make(map[string]JsonValue)
 					for i, value := range arr {
 						obj[strconv.Itoa(i+1)] = value
 					}
-					obj[strconv.Itoa(index+1)] = jsonValue{v, visited}
+					obj[strconv.Itoa(index+1)] = JsonValue{v, visited}
 					return
 				}
-				arr = append(arr, jsonValue{v, visited})
+				arr = append(arr, JsonValue{v, visited})
 				return
 			}
 			if obj == nil {
-				obj = make(map[string]jsonValue)
+				obj = make(map[string]JsonValue)
 				for i, value := range arr {
 					obj[strconv.Itoa(i+1)] = value
 				}
 			}
-			obj[k.String()] = jsonValue{v, visited}
+			obj[k.String()] = JsonValue{v, visited}
 		})
 		if obj != nil {
 			data, err = json.Marshal(obj)
@@ -81,7 +81,7 @@ func toJSON(value lua.LValue, visited map[*lua.LTable]bool) (data []byte, err er
 		}
 	case *lua.LUserData:
 		// TODO: call metatable __tostring?
-		err = errUserData
+		err = ErrUserData
 	}
 	return
 }

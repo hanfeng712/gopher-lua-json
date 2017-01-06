@@ -1,9 +1,9 @@
-package json // import "layeh.com/gopher-json"
+package json
 
 import (
 	"encoding/json"
 
-	"github.com/yuin/gopher-lua"
+	lua "github.com/yuin/gopher-lua"
 )
 
 var api = map[string]lua.LGFunction{
@@ -29,7 +29,7 @@ func apiEncode(L *lua.LState) int {
 	value := L.CheckAny(1)
 
 	visited := make(map[*lua.LTable]bool)
-	data, err := toJSON(value, visited)
+	data, err := ToJSON(value, visited)
 	if err != nil {
 		L.Push(lua.LNil)
 		L.Push(lua.LString(err.Error()))
