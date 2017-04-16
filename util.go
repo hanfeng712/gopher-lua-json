@@ -86,7 +86,7 @@ func ToJSON(value lua.LValue, visited map[*lua.LTable]bool) (data []byte, err er
 	return
 }
 
-func fromJSON(L *lua.LState, value interface{}) lua.LValue {
+func FromJSON(L *lua.LState, value interface{}) lua.LValue {
 	switch converted := value.(type) {
 	case bool:
 		return lua.LBool(converted)
@@ -97,13 +97,13 @@ func fromJSON(L *lua.LState, value interface{}) lua.LValue {
 	case []interface{}:
 		arr := L.CreateTable(len(converted), 0)
 		for _, item := range converted {
-			arr.Append(fromJSON(L, item))
+			arr.Append(FromJSON(L, item))
 		}
 		return arr
 	case map[string]interface{}:
 		tbl := L.CreateTable(0, len(converted))
 		for key, item := range converted {
-			tbl.RawSetH(lua.LString(key), fromJSON(L, item))
+			tbl.RawSetH(lua.LString(key), FromJSON(L, item))
 		}
 		return tbl
 	}

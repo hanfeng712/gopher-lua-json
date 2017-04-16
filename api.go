@@ -21,7 +21,7 @@ func apiDecode(L *lua.LState) int {
 		L.Push(lua.LString(err.Error()))
 		return 2
 	}
-	L.Push(fromJSON(L, value))
+	L.Push(FromJSON(L, value))
 	return 1
 }
 
