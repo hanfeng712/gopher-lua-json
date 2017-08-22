@@ -14,6 +14,7 @@ var (
 	ErrState    = errors.New("cannot encode state to JSON")
 	ErrUserData = errors.New("cannot encode userdata to JSON")
 	ErrNested   = errors.New("cannot encode recursively nested tables to JSON")
+	emptyJSON   = []byte("{}")
 )
 
 type JsonValue struct {
@@ -76,6 +77,8 @@ func ToJSON(value lua.LValue, visited map[*lua.LTable]bool) (data []byte, err er
 		})
 		if obj != nil {
 			data, err = json.Marshal(obj)
+		} else if len(arr) == 0 {
+			data = emptyJSON
 		} else {
 			data, err = json.Marshal(arr)
 		}

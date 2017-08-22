@@ -38,4 +38,26 @@ func TestMarshal(t *testing.T) {
 		t.Error(err)
 	}
 	t.Logf("%v\n", string(jsonValue2))
+
+	emptyValue := getValue(state, `return { }`)
+	// stringValue := getValue(state, `return 314`)
+
+	tempLuaObj = NewJsonValue(emptyValue)
+	jsonValue, err = tempLuaObj.MarshalJSON()
+	if nil != err {
+		t.Error(err)
+	}
+
+	t.Logf("%v\n", string(jsonValue))
+
+	json.Unmarshal(jsonValue, &parsedJson)
+	lValue = FromJSON(state, parsedJson)
+
+	tempLuaObj2 = NewJsonValue(lValue)
+	jsonValue2, err = tempLuaObj2.MarshalJSON()
+	if nil != err {
+		t.Error(err)
+	}
+	t.Logf("%v\n", string(jsonValue2))
+
 }
