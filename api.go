@@ -3,7 +3,7 @@ package json
 import (
 	"encoding/json"
 
-	lua "github.com/yuin/gopher-lua"
+	lua "github.com/coinstack/gopher-lua"
 )
 
 var api = map[string]lua.LGFunction{

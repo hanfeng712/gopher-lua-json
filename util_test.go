@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	lua "github.com/yuin/gopher-lua"
+	lua "github.com/coinstack/gopher-lua"
 )
 
 func getValue(state *lua.LState, def string) lua.LValue {
