@@ -3,7 +3,7 @@ package json
 import (
 	"testing"
 
-	lua "github.com/coinstack/gopher-lua"
+	lua "github.com/yuin/gopher-lua"
 )
 
 func TestSimple(t *testing.T) {

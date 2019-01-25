@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 
-	lua "github.com/coinstack/gopher-lua"
+	lua "github.com/yuin/gopher-lua"
 )
 
 var (
